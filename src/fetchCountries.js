@@ -1,17 +1,14 @@
-const fetch = require('node-fetch');
-
 const fetchCountries = async (name) => {
   try {
-    const response = await fetch(`https://restcountries.com/v2/name/${name}`);
+    const response = await fetch(`https://restcountries.com/v2/name/${name}?fields=name.official,capital,population,flags.svg,languages`);
     if (!response.ok) {
-      throw new Error('Request failed with status ' + response.status);
+      throw new Error('Country not found');
     }
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching data:', error);
-    return [];
+    throw error;
   }
 };
 
-module.exports = fetchCountries;
+export default fetchCountries;

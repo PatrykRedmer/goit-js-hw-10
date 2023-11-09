@@ -1,56 +1,64 @@
 import fetchCountries from './fetchCountries.js';
+import _ from 'lodash';
 import Notiflix from 'notiflix';
-import debounce from 'lodash.debounce';
-const searchBox = document.getElementById('search-box');
+
+const DEBOUNCE_DELAY = 300;
+const searchBox = document.querySelector('#search-box');
+const countryContainer = document.querySelector('.country-info');
 const countryList = document.querySelector('.country-list');
-const renderCountry = (country) => {
-    const listItem = document.createElement('li');
-    const languages = Object.values(country.languages).join(', ');
-    listItem.innerHTML = `
-        <div>
-            <img src="${country.flags.svg}" alt="Flag" style="width: 30px; height: 20px;">
-        </div>
-        <div>
-            <h3>${country.name}</h3>
-            <p><strong>Capital:</strong> ${country.capital}</p>
-            <p><strong>Population:</strong> ${country.population}</p>
-            <p><strong>Languages:</strong> ${languages}</p>
-        </div>
-    `;
-    countryList.appendChild(listItem);
+
+const renderCountryCard = (country) => {
+  const { name, capital, population, flags, languages } = country[0];
+  const languagesList = languages.map((lang) => lang.name).join(', ');
+
+  const countryCard = `
+    <div class="card">
+      <img src="${flags.svg}" alt="flag" class="flag">
+      <h2>${name.official}</h2>
+      <p><strong>Capital:</strong> ${capital}</p>
+      <p><strong>Population:</strong> ${population}</p>
+      <p><strong>Languages:</strong> ${languagesList}</p>
+    </div>
+  `;
+  countryContainer.innerHTML = countryCard;
 };
-const clearCountryList = () => {
+
+const renderCountryList = (countries) => {
+  countryContainer.innerHTML = '';
+  countryList.innerHTML = '';
+
+  if (countries.length > 10) {
+    Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
+  } else if (countries.length >= 2 && countries.length <= 10) {
+    countries.forEach((country) => {
+      const { name, flags } = country;
+      const listItem = document.createElement('li');
+      listItem.innerHTML = `<img src="${flags.svg}" alt="flag" class="flag"><span>${name.official}</span>`;
+      countryList.appendChild(listItem);
+    });
+  } else if (countries.length === 1) {
+    renderCountryCard(countries);
+  } else {
+    Notiflix.Notify.failure('Oops, there is no country with that name');
+  }
+};
+
+const debouncedFetch = _.debounce(async (name) => {
+  if (name.trim() === '') {
+    countryContainer.innerHTML = '';
     countryList.innerHTML = '';
-};
-const handleFetchError = (error) => {
-    if (error.status === 404) {
-        Notiflix.Notify.failure('Oops, there is no country with that name');
-    } else {
-        console.error('Error fetching data:', error);
-    }
-};
-const fetchCountryData = async (searchQuery) => {
-    try {
-        const countries = await fetchCountries(searchQuery);
-        clearCountryList();
-        if (countries.length > 10) {
-            Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
-        } else if (countries.length > 1 && countries.length <= 10) {
-            countries.forEach(country => renderCountry(country));
-        } else if (countries.length === 1) {
-            renderCountry(countries[0]);
-        }
-    } catch (error) {
-        handleFetchError(error);
-    }
-}
-const onSearchInput = event => {
-    event.preventDefault();
-    const searchQuery = event.target.value.trim();
-    if (searchQuery.trim() === '') {
-      clearCountryList();
-      return;
-    }
-    fetchCountryData(searchQuery);
-  };
-  searchBox.addEventListener('input', debounce(onSearchInput, 300));
+    return;
+  }
+
+  try {
+    const countries = await fetchCountries(name.trim());
+    renderCountryList(countries);
+  } catch (error) {
+    Notiflix.Notify.failure('Oops, there is no country with that name');
+  }
+}, DEBOUNCE_DELAY);
+
+searchBox.addEventListener('input', (event) => {
+  const searchText = event.target.value;
+  debouncedFetch(searchText);
+});
