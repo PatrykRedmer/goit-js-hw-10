@@ -6,9 +6,15 @@ const countryList = document.querySelector('.country-list');
 const renderCountry = (country) => {
     const listItem = document.createElement('li');
     const languages = Object.values(country.languages).join(', ');
+    
+    let flagImage = '';
+    if (country.flags && country.flags.svg) {
+        flagImage = `<img src="${country.flags.svg}" alt="Flag" style="width: 30px; height: 20px;">`;
+    }
+
     listItem.innerHTML = `
         <div>
-            <img src="${country.flags}" alt="Flag" style="width: 30px; height: 20px;">
+            ${flagImage}
         </div>
         <div>
             <h3>${country.name}</h3>
@@ -19,6 +25,8 @@ const renderCountry = (country) => {
     `;
     countryList.appendChild(listItem);
 };
+
+    countryList.appendChild(listItem);
 const clearCountryList = () => {
     countryList.innerHTML = '';
 };
