@@ -4,25 +4,17 @@ import debounce from 'lodash.debounce';
 const searchBox = document.getElementById('search-box');
 const countryList = document.querySelector('.country-list');
 const renderCountry = (country) => {
-    console.log('Country object from API:', country); // Dodaj to, aby zobaczyć, co zawiera obiekt kraju
-
     const listItem = document.createElement('li');
-    const language = Object.values(country.language).join(', ');
-
-    let flagImage = '';
-    if (country.flags && country.flags) {
-        flagImage = `<img src="${country.flags}" alt="Flag" style="width: 30px; height: 20px;">`;
-    }
-
+    const languages = Object.values(country.languages).join(', ');
     listItem.innerHTML = `
         <div>
-            ${flagImage}
+            <img src="${country.flags.svg}" alt="Flag" style="width: 30px; height: 20px;">
         </div>
         <div>
             <h3>${country.name}</h3>
             <p><strong>Capital:</strong> ${country.capital}</p>
             <p><strong>Population:</strong> ${country.population}</p>
-            <p><strong>Language:</strong> ${language}</p>
+            <p><strong>Languages:</strong> ${languages}</p>
         </div>
     `;
     countryList.appendChild(listItem);
