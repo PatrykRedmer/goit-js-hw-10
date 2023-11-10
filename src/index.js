@@ -8,7 +8,7 @@ const renderCountry = (country) => {
     const languages = Object.values(country.languages).join(', ');
     listItem.innerHTML = `
         <div>
-            <img src="${country.flags.svg}" alt="Flag" style="width: 30px; height: 20px;">
+            <img src="${country.flags}" alt="Flag" style="width: 30px; height: 20px;">
         </div>
         <div>
             <h3>${country.name}</h3>
