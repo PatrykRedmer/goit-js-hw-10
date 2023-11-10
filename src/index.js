@@ -7,7 +7,7 @@ const renderCountry = (country) => {
     console.log('Country object from API:', country); // Dodaj to, aby zobaczyć, co zawiera obiekt kraju
 
     const listItem = document.createElement('li');
-    const languages = Object.values(country.languages).join(', ');
+    const language = Object.values(country.language).join(', ');
 
     let flagImage = '';
     if (country.flags && country.flags) {
@@ -22,7 +22,7 @@ const renderCountry = (country) => {
             <h3>${country.name}</h3>
             <p><strong>Capital:</strong> ${country.capital}</p>
             <p><strong>Population:</strong> ${country.population}</p>
-            <p><strong>Languages:</strong> ${languages}</p>
+            <p><strong>Language:</strong> ${language}</p>
         </div>
     `;
     countryList.appendChild(listItem);
