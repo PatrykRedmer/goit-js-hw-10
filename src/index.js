@@ -5,7 +5,8 @@ const searchBox = document.getElementById('search-box');
 const countryList = document.querySelector('.country-list');
 const renderCountry = (country) => {
     const listItem = document.createElement('li');
-    const languages = Object.values(country.languages).join(', ');
+    console.log(country)
+    const languages = country.languages[0].name
     listItem.innerHTML = `
         <div>
             <img src="${country.flags.svg}" alt="Flag" style="width: 30px; height: 20px;">
