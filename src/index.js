@@ -3,7 +3,7 @@ import Notiflix from 'notiflix';
 import debounce from 'lodash.debounce';
 const searchBox = document.getElementById('search-box');
 const countryList = document.querySelector('.country-list');
-const renderCountry = (country) => {
+const renderCountryInfo = (country) => {
     const listItem = document.createElement('li');
     console.log(country)
     const languages = country.languages[0].name
@@ -22,6 +22,19 @@ const renderCountry = (country) => {
 };
 const clearCountryList = () => {
     countryList.innerHTML = '';
+};
+const renderCountry = (country) => {
+    const listItem = document.createElement('li');
+    console.log(country)
+    listItem.innerHTML = `
+        <div>
+            <img src="${country.flags.svg}" alt="Flag" style="width: 30px; height: 20px;">
+        </div>
+        <div>
+            <h3>${country.name}</h3>
+        </div>
+    `;
+    countryList.appendChild(listItem);
 };
 const handleFetchError = (error) => {
     if (error.status === 404) {
