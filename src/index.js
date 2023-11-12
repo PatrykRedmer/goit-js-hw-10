@@ -37,8 +37,8 @@ const renderCountry = (country) => {
     countryList.appendChild(listItem);
 };
 const handleFetchError = (error) => {
-    if (error.status === 404) {
-        Notiflix.Notify.failure('Oops, there is no country with that name');
+    if (error.response && error.response.status === 404) {
+        Notiflix.Notify.info('Oops, there is no country with that name');
     } else {
         console.error('Error fetching data:', error);
     }
@@ -52,7 +52,9 @@ const fetchCountryData = async (searchQuery) => {
         } else if (countries.length > 1 && countries.length <= 10) {
             countries.forEach(country => renderCountry(country));
         } else if (countries.length === 1) {
-            renderCountry(countries[0]);
+            renderCountryInfo(countries[0]);
+        } else if (countries.length === 0) {
+            Notiflix.Notify.failure('Oops, there is no country with that name');
         }
     } catch (error) {
         handleFetchError(error);
